@@ -21,7 +21,6 @@ type state struct {
 	bufferName   string
 	varnum       int
 	scope        scope
-	autoescape   ast.AutoescapeType
 	lastNode     ast.Node
 	options      Options
 }

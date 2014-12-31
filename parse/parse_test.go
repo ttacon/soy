@@ -360,21 +360,22 @@ var parseTests = []parseTest{
 		&ast.CallNode{0, ".zooTemplate", false, &ast.DataRefNode{0, "animals", nil}, []ast.Node{
 			&ast.CallParamValueNode{0, "yoo", &ast.FunctionNode{0, "round", []ast.Node{&ast.DataRefNode{0, "too", nil}}}},
 			&ast.CallParamContentNode{0, "woo", tList(newText(0, "poo"))},
-			&ast.CallParamContentNode{0, "doo", tList(newText(0, "doopoo"))}}},
+			&ast.CallParamContentNode{0, "doo", "html", tList(newText(0, "doopoo"))}}},
 		&ast.CallNode{0, "a.long.template.booTemplate_", false, nil, nil},
 		&ast.CallNode{0, ".zooTemplate", false, &ast.DataRefNode{0, "animals", nil}, []ast.Node{
 			&ast.CallParamValueNode{0, "yoo", &ast.FunctionNode{0, "round", []ast.Node{&ast.DataRefNode{0, "too", nil}}}},
 			&ast.CallParamContentNode{0, "woo", tList(newText(0, "poo"))},
 			&ast.CallParamValueNode{0, "zoo", &ast.IntNode{0, 0}},
-			&ast.CallParamContentNode{0, "doo", tList(newText(0, "doopoo"))}}},
+			&ast.CallParamContentNode{0, "doo", "html", tList(newText(0, "doopoo"))}}},
 	)},
 
 	{"let", `
 {let $alpha: $boo.foo /}
 {let $beta}Boo!{/let}
-`, /*{let $delta kind="html"}Boo!{/let}*/ tFile(
+{let $delta kind="html"}Boo!{/let}`, tFile(
 		&ast.LetValueNode{0, "alpha", &ast.DataRefNode{0, "boo", []ast.Node{&ast.DataRefKeyNode{0, false, "foo"}}}},
-		&ast.LetContentNode{0, "beta", tList(newText(0, "Boo!"))},
+		&ast.LetContentNode{0, "beta", "", tList(newText(0, "Boo!"))},
+		&ast.LetContentNode{0, "delta", "html", tList(newText(0, "Boo!"))},
 	)},
 
 	{"comments", `
@@ -748,9 +749,7 @@ func TestRecognizeCommands(t *testing.T) {
 	works(t, "{let $foo : 1 + 2/}\n")
 	works(t, "{let $foo : '\"'/}\n")
 	works(t, "{let $foo}Hello{/let}\n")
-
-	// TODO: implement kind
-	// works(t, "{let $foo kind=\"html\"}Hello{/let}\n")
+	works(t, "{let $foo kind=\"html\"}Hello{/let}\n")
 
 	fails(t, "{msg}blah{/msg}")
 	fails(t, "{/msg}")
